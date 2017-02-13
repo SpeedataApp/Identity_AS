@@ -3,17 +3,18 @@
 Speedata Android SDK  二代证读写示例
 文件说明
 
-
+此项目为AS工程
 
 功能介绍
-
+思必拓二代证读取示例
 
 开发说明
 
+参考demo 以及api
 
 API文档
 
-详细的接口说明在showdoc，地址：http://www.showdoc.cc/11073?page_id=90826
+https://www.showdoc.cc/11034?page_id=107009
 
 
 北京思必拓科技股份有限公司
