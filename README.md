@@ -1,18 +1,24 @@
 # Identity_AS
 
-Speedata Android SDK  二代证读写示例
-文件说明
+Speedata Android SDK
 
-此项目为AS工程
+
 
 功能介绍
-思必拓二代证读取示例
 
-开发说明
 
-参考demo 以及api
+#功能介绍:
 
-API文档
+二代证接口调用示例
+
+
+#开发说明:
+
+此项目只支持as调用
+
+
+
+#API文档
 
 https://www.showdoc.cc/11034?page_id=107009
 
