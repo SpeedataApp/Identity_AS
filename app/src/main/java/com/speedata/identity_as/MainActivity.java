@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
         initUI();
         initID();
     }
@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private Timer timer = new Timer();
 
     private void initUI() {
+        setContentView(R.layout.activity_main);
         tvIDInfor = (TextView) findViewById(R.id.tv_idinfor);
         imgPic = (ImageView) findViewById(R.id.img_pic);
         btnGet = (ToggleButton) findViewById(R.id.btn_get);

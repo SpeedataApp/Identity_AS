@@ -10,7 +10,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.speedata.identitycard.IDTestActivity">
+    >
 
     <CheckBox
         android:id="@+id/checkbox_wit_finger"
@@ -18,16 +18,16 @@
         android:layout_height="wrap_content"
         android:text="@string/need_finger"
         android:visibility="gone"/>
+
     <TextView
-        android:layout_width="fill_parent"
         android:id="@+id/tv_msg"
-        android:text="11"
-        android:layout_height="wrap_content"/>
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="11"/>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="200dp"
-        android:background="@drawable/shape_border_btn"
         android:orientation="horizontal"
         android:paddingBottom="3dp"
         android:paddingLeft="3dp"
@@ -100,9 +100,9 @@
         android:id="@+id/btn_get"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:text="读取身份证"
         android:textOff="读卡"
-        android:textOn="停止"
-        android:text="读取身份证"/>
+        android:textOn="停止"/>
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -132,14 +132,15 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:visibility="gone"
-                android:text="前置"/>
+                android:text="前置"
+                android:visibility="gone"/>
 
             <Button
                 android:id="@+id/btn_preview"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="预览"/>
+
             <Button
                 android:id="@+id/btn_take_photo"
                 android:layout_width="fill_parent"
