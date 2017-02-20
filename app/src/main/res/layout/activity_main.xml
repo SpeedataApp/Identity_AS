@@ -102,7 +102,6 @@
         android:layout_height="wrap_content"
         android:text="读取身份证"
         android:textOff="读卡"
-
         android:textOn="停止"/>
 
 

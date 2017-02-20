@@ -5,7 +5,7 @@
 ```
  dependencies {
     compile 'com.speedata:deivice:1.1'
-    compile 'com.speedata:libid2:1.6'
+    compile 'com.speedata:libid2:1.7'
   }
 ```
 **Eclipse** 需导入libs库 LibDevice 和 LibIdentity
@@ -46,15 +46,14 @@ IID2Service获取对象
    {
    //串口2 波特率115200 主板+外部扩展上电 主板gpio=88 外部gpio=6
     boolean result = iid2Service.initDev(this, new IDReadCallBack() {
-                         @Override
-                         public void callBack(IDInfor infor) {
- 						//处理身份信息
-                             Message message = new Message();
-                             message.obj = infor;
-                             handler.sendMessage(message);
-                         }
-                     }, SerialPort.SERIAL_TTYMT2, 115200, DeviceControl.PowerType.MAIN_AND_EXPAND
-                     , 88, 6);
+                            @Override
+                            public void callBack(IDInfor infor) {
+                                Message message = new Message();
+                                message.obj = infor;
+                                handler.sendMessage(message);
+                            }
+                        },
+                        DeviceType.getSerialPort(), 115200, DeviceType.getPowerType(), DeviceType.getGpio());
 
    }
  ```

@@ -6,8 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.serialport.DeviceControl;
-import android.serialport.SerialPort;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.CheckBox;
@@ -60,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                     timer = new Timer();
                 }
                 if (b) {
-                    timer.schedule(new readIDTask(), 1000, 1000);
+                    timer.schedule(new readIDTask(), 20, 3000);
                 } else {
                     timer.cancel();
                     timer = null;
@@ -72,7 +70,9 @@ public class MainActivity extends AppCompatActivity {
 
         checkBoxFinger = (CheckBox) findViewById(R.id.checkbox_wit_finger);
     }
+
     private IID2Service iid2Service;
+
     class readIDTask extends TimerTask {
         @Override
         public void run() {
@@ -80,12 +80,15 @@ public class MainActivity extends AppCompatActivity {
             iid2Service.getIDInfor(checkBoxFinger.isChecked());
         }
     }
+
     private void clearUI() {
         tvIDInfor.setText("");
         imgPic.setImageBitmap(null);
     }
+
     private void initID() {
         iid2Service = IDManager.getInstance();
+
         try {
             boolean result = iid2Service.initDev(this, new IDReadCallBack() {
                         @Override
@@ -94,9 +97,8 @@ public class MainActivity extends AppCompatActivity {
                             message.obj = infor;
                             handler.sendMessage(message);
                         }
-                    }, SerialPort.SERIAL_TTYMT2, 115200, DeviceControl.PowerType.MAIN_AND_EXPAND
-                    , 88, 6);
-//                    , 94);
+                    },
+                    DeviceType.getSerialPort(), 115200, DeviceType.getPowerType(), DeviceType.getGpio());
             tvInfor.setText("s:MT2 b:115200 p:88 6");
             if (!result) {
                 new AlertDialog.Builder(this).setCancelable(false).setMessage("二代证模块初始化失败")
@@ -115,12 +117,14 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             clearUI();
             IDInfor idInfor1 = (IDInfor) msg.obj;
+
             if (idInfor1.isSuccess()) {
                 tvIDInfor.setText("姓名:" + idInfor1.getName() + "\n身份证号：" + idInfor1.getNum() +
                         "\n性别：" + idInfor1.getSex() +
@@ -136,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
                 imgPic.setImageBitmap(null);
             }
             if (idInfor1.isWithFinger()) {
-
                 Bitmap bitmap = ShowFingerBitmap(idInfor1.getFingerprStringer(), WIDTH, HEIGHT);
                 imgFinger.setImageBitmap(bitmap);
             }
