@@ -1,5 +1,6 @@
 package com.speedata.identity_as;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -21,18 +22,16 @@ import com.speedata.libid2.IDReadCallBack;
 import com.speedata.libid2.IID2Service;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static com.speedata.libid2.HuaXuID.HEIGHT;
-import static com.speedata.libid2.HuaXuID.WIDTH;
 
 public class MainActivity extends AppCompatActivity {
     private TextView tvIDInfor;
     private ImageView imgPic;
     private TextView tvInfor;
 
-    private ImageView imgFinger;
+    //    private ImageView imgFinger;
     private CheckBox checkBoxFinger;
     private ToggleButton btnGet;
 
@@ -73,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
     private IID2Service iid2Service;
 
-    class readIDTask extends TimerTask {
+    private class readIDTask extends TimerTask {
         @Override
         public void run() {
 
@@ -99,7 +98,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                     },
                     DeviceType.getSerialPort(), 115200, DeviceType.getPowerType(), DeviceType.getGpio());
-            tvInfor.setText("s:MT2 b:115200 p:88 6");
+            tvInfor.setText(String.format("s:%s b:115200 p:%s",
+                    DeviceType.getSerialPort().substring(DeviceType.getSerialPort().length() - 6, DeviceType.getSerialPort().length()),
+                    Arrays.toString(DeviceType.getGpio()).replace("[", "").replace("]", "")));
             if (!result) {
                 new AlertDialog.Builder(this).setCancelable(false).setMessage("二代证模块初始化失败")
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -118,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("HandlerLeak")
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -136,17 +138,17 @@ public class MainActivity extends AppCompatActivity {
                 imgPic.setImageBitmap(bmps);
 
             } else {
-                tvIDInfor.setText("ERROR:" + idInfor1.getErrorMsg());
+                tvIDInfor.setText(String.format("ERROR:%s", idInfor1.getErrorMsg()));
                 imgPic.setImageBitmap(null);
             }
-            if (idInfor1.isWithFinger()) {
-                Bitmap bitmap = ShowFingerBitmap(idInfor1.getFingerprStringer(), WIDTH, HEIGHT);
-                imgFinger.setImageBitmap(bitmap);
-            }
+//            if (idInfor1.isWithFinger()) {
+//                Bitmap bitmap = ShowFingerBitmap(idInfor1.getFingerprStringer(), WIDTH, HEIGHT);
+//                imgFinger.setImageBitmap(bitmap);
+//            }
         }
     };
 
-
+    @SuppressWarnings("unused")
     private Bitmap ShowFingerBitmap(byte[] image, int width, int height) {
         if (width == 0) return null;
         if (height == 0) return null;
@@ -159,8 +161,7 @@ public class MainActivity extends AppCompatActivity {
             else v = 0;
             RGBbits[i] = Color.rgb(v, v, v);
         }
-        Bitmap bmp = Bitmap.createBitmap(RGBbits, width, height, Bitmap.Config.RGB_565);
-        return bmp;
+        return Bitmap.createBitmap(RGBbits, width, height, Bitmap.Config.RGB_565);
     }
 
     private void showToast(String msg) {
