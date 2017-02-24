@@ -53,9 +53,9 @@ IID2Service获取对象
                                 handler.sendMessage(message);
                             }
                         },
-                        DeviceType.getSerialPort(), 115200, DeviceType.getPowerType(), DeviceType.getGpio());
-
-   }
+                       SerialPort.SERIAL_TTYMT1, 115200, DeviceControl.PowerType.MAIN, 94);//kt45Q 配置参数
+                       //SerialPort.SERIAL_TTYMT2, 115200, DeviceControl.PowerType.MAIN_AND_EXPAND, //88,6);//kt55 背夹参数
+   }
  ```
 
  ------------
