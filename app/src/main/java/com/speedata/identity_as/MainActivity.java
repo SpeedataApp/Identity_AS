@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.serialport.DeviceControl;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.CheckBox;
@@ -16,11 +17,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.alibaba.fastjson.JSON;
 import com.speedata.libid2.IDInfor;
 import com.speedata.libid2.IDManager;
 import com.speedata.libid2.IDReadCallBack;
 import com.speedata.libid2.IID2Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Timer;
@@ -30,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvIDInfor;
     private ImageView imgPic;
     private TextView tvInfor;
+
+    private static final String FILE_PATH = "/system/speedata.config";
+    private Config mConfig;
 
     //    private ImageView imgFinger;
     private CheckBox checkBoxFinger;
@@ -87,6 +93,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void initID() {
         iid2Service = IDManager.getInstance();
+        int[] intArray = new int[0];
+
+        File mFile = new File(FILE_PATH);
+        if (mFile.exists()) {
+            String configContent = FileUtils.readTxtFile(FILE_PATH);
+            mConfig = JSON.parseObject(configContent, Config.class);
+            intArray = new int[mConfig.getId2().getGpio().size()];
+            for (int i = 0; i < mConfig.getId2().getGpio().size(); i++) {
+                intArray[i] = mConfig.getId2().getGpio().get(i);
+            }
+        }
 
         try {
             boolean result = iid2Service.initDev(this, new IDReadCallBack() {
@@ -97,7 +114,11 @@ public class MainActivity extends AppCompatActivity {
                             handler.sendMessage(message);
                         }
                     },
-                    DeviceType.getSerialPort(), 115200, DeviceType.getPowerType(), DeviceType.getGpio());
+                    mFile.exists() ? mConfig.getId2().getSerialPort() : DeviceType.getSerialPort(),
+                    mFile.exists() ? mConfig.getId2().getBraut() : 111520,
+                    mFile.exists() ? mConfig.getId2().getPowerType().equals("MAIN") ? DeviceControl.PowerType.MAIN : DeviceControl.PowerType.MAIN_AND_EXPAND
+                            : DeviceType.getPowerType(),
+                    mFile.exists() ? intArray : DeviceType.getGpio());
             tvInfor.setText(String.format("s:%s b:115200 p:%s",
                     DeviceType.getSerialPort().substring(DeviceType.getSerialPort().length() - 6, DeviceType.getSerialPort().length()),
                     Arrays.toString(DeviceType.getGpio()).replace("[", "").replace("]", "")));
@@ -119,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     @SuppressLint("HandlerLeak")
     Handler handler = new Handler() {
         @Override
@@ -128,10 +150,10 @@ public class MainActivity extends AppCompatActivity {
             IDInfor idInfor1 = (IDInfor) msg.obj;
 
             if (idInfor1.isSuccess()) {
-                tvIDInfor.setText("姓名:" + idInfor1.getName() + "\n身份证号：" + idInfor1.getNum() +
-                        "\n性别：" + idInfor1.getSex() +
-                        "\n民族：" + idInfor1.getNation() + "\n住址:" +
-                        idInfor1.getAddress() + "\n出生：" + idInfor1.getYear() + "年" + idInfor1
+                tvIDInfor.setText("姓名:" + idInfor1.getName() + "\n身份证号：" + idInfor1.getNum()
+                        + "\n性别：" + idInfor1.getSex()
+                        + "\n民族：" + idInfor1.getNation() + "\n住址:"
+                        + idInfor1.getAddress() + "\n出生：" + idInfor1.getYear() + "年" + idInfor1
                         .getMonth() + "月" + idInfor1.getDay() + "日" + "\n有效期限：" + idInfor1
                         .getDeadLine());
                 Bitmap bmps = idInfor1.getBmps();
@@ -141,10 +163,6 @@ public class MainActivity extends AppCompatActivity {
                 tvIDInfor.setText(String.format("ERROR:%s", idInfor1.getErrorMsg()));
                 imgPic.setImageBitmap(null);
             }
-//            if (idInfor1.isWithFinger()) {
-//                Bitmap bitmap = ShowFingerBitmap(idInfor1.getFingerprStringer(), WIDTH, HEIGHT);
-//                imgFinger.setImageBitmap(bitmap);
-//            }
         }
     };
 
