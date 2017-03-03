@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                     timer = new Timer();
                 }
                 if (b) {
-                    timer.schedule(new readIDTask(), 20, 3000);
+                    timer.schedule(new ReadIDTask(), 20, 3000);
                 } else {
                     timer.cancel();
                     timer = null;
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
     private IID2Service iid2Service;
 
-    private class readIDTask extends TimerTask {
+    private class ReadIDTask extends TimerTask {
         @Override
         public void run() {
 
