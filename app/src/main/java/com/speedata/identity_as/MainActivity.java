@@ -116,11 +116,13 @@ public class MainActivity extends AppCompatActivity {
                     },
                     mFile.exists() ? mConfig.getId2().getSerialPort() : DeviceType.getSerialPort(),
                     mFile.exists() ? mConfig.getId2().getBraut() : 111520,
-                    mFile.exists() ? mConfig.getId2().getPowerType().equals("MAIN") ? DeviceControl.PowerType.MAIN : DeviceControl.PowerType.MAIN_AND_EXPAND
+                    mFile.exists() ? mConfig.getId2().getPowerType().equals("MAIN") ?
+                            DeviceControl.PowerType.MAIN : DeviceControl.PowerType.MAIN_AND_EXPAND
                             : DeviceType.getPowerType(),
                     mFile.exists() ? intArray : DeviceType.getGpio());
             tvInfor.setText(String.format("s:%s b:115200 p:%s",
-                    DeviceType.getSerialPort().substring(DeviceType.getSerialPort().length() - 6, DeviceType.getSerialPort().length()),
+                    DeviceType.getSerialPort().substring(DeviceType.getSerialPort().length() - 6,
+                            DeviceType.getSerialPort().length()),
                     Arrays.toString(DeviceType.getGpio()).replace("[", "").replace("]", "")));
             if (!result) {
                 new AlertDialog.Builder(this).setCancelable(false).setMessage("二代证模块初始化失败")
@@ -184,5 +186,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void showToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        try {
+            if (iid2Service != null)
+                iid2Service.releaseDev();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        super.onDestroy();
     }
 }
