@@ -4,8 +4,8 @@
 
 ```
  dependencies {
-    compile 'com.speedata:deivice:1.1'
-    compile 'com.speedata:libid2:2.0'
+    compile 'com.speedata:deivice:1.2'
+    compile 'com.speedata:libid2:2.1'
   }
 ```
 **Eclipse** 需导入libs库 LibDevice 和 LibIdentity
@@ -57,6 +57,17 @@ IID2Service获取对象
                        //SerialPort.SERIAL_TTYMT2, 115200, DeviceControl.PowerType.MAIN_AND_EXPAND, //88,6);//kt55 背夹参数
    }
  ```
+或者 ：
+```
+boolean result = iid2Service.initDev(this, new IDReadCallBack() {
+                @Override
+                public void callBack(IDInfor infor) {
+                    Message message = new Message();
+                    message.obj = infor;
+                    handler.sendMessage(message);
+                }
+            });
+```
 
  ------------
 

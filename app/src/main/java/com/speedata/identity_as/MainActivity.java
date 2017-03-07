@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.serialport.DeviceControl;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.CheckBox;
@@ -17,13 +16,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.alibaba.fastjson.JSON;
 import com.speedata.libid2.IDInfor;
 import com.speedata.libid2.IDManager;
 import com.speedata.libid2.IDReadCallBack;
 import com.speedata.libid2.IID2Service;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Timer;
@@ -93,33 +90,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void initID() {
         iid2Service = IDManager.getInstance();
-        int[] intArray = new int[0];
-
-        File mFile = new File(FILE_PATH);
-        if (mFile.exists()) {
-            String configContent = FileUtils.readTxtFile(FILE_PATH);
-            mConfig = JSON.parseObject(configContent, Config.class);
-            intArray = new int[mConfig.getId2().getGpio().size()];
-            for (int i = 0; i < mConfig.getId2().getGpio().size(); i++) {
-                intArray[i] = mConfig.getId2().getGpio().get(i);
-            }
-        }
-
         try {
             boolean result = iid2Service.initDev(this, new IDReadCallBack() {
-                        @Override
-                        public void callBack(IDInfor infor) {
-                            Message message = new Message();
-                            message.obj = infor;
-                            handler.sendMessage(message);
-                        }
-                    },
-                    mFile.exists() ? mConfig.getId2().getSerialPort() : DeviceType.getSerialPort(),
-                    mFile.exists() ? mConfig.getId2().getBraut() : 111520,
-                    mFile.exists() ? mConfig.getId2().getPowerType().equals("MAIN") ?
-                            DeviceControl.PowerType.MAIN : DeviceControl.PowerType.MAIN_AND_EXPAND
-                            : DeviceType.getPowerType(),
-                    mFile.exists() ? intArray : DeviceType.getGpio());
+                @Override
+                public void callBack(IDInfor infor) {
+                    Message message = new Message();
+                    message.obj = infor;
+                    handler.sendMessage(message);
+                }
+            });
             tvInfor.setText(String.format("s:%s b:115200 p:%s",
                     DeviceType.getSerialPort().substring(DeviceType.getSerialPort().length() - 6,
                             DeviceType.getSerialPort().length()),
