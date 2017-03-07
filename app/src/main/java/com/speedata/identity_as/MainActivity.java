@@ -22,7 +22,6 @@ import com.speedata.libid2.IDReadCallBack;
 import com.speedata.libid2.IID2Service;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -97,10 +96,10 @@ public class MainActivity extends AppCompatActivity {
                     handler.sendMessage(message);
                 }
             });
-            tvInfor.setText(String.format("s:%s b:115200 p:%s",
-                    DeviceType.getSerialPort().substring(DeviceType.getSerialPort().length() - 6,
-                            DeviceType.getSerialPort().length()),
-                    Arrays.toString(DeviceType.getGpio()).replace("[", "").replace("]", "")));
+//            tvInfor.setText(String.format("s:%s b:115200 p:%s",
+//                    DeviceType.getSerialPort().substring(DeviceType.getSerialPort().length() - 6,
+//                            DeviceType.getSerialPort().length()),
+//                    Arrays.toString(DeviceType.getGpio()).replace("[", "").replace("]", "")));
             if (!result) {
                 new AlertDialog.Builder(this).setCancelable(false).setMessage("二代证模块初始化失败")
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
