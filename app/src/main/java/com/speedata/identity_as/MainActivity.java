@@ -31,8 +31,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imgPic;
     private TextView tvInfor;
 
-    private static final String FILE_PATH = "/system/speedata.config";
-    private Config mConfig;
 
     //    private ImageView imgFinger;
     private CheckBox checkBoxFinger;
