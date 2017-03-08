@@ -55,6 +55,7 @@ public class HuaXuID implements IID2Service {
     private IDReadCallBack callBack;
     private ParseIDInfor parseIDInfor;
     private DeviceControl deviceControl;
+    private Thread thread;
 
     @Override
     public boolean initDev(Context mContext, IDReadCallBack callBack, String serialport, int braut,
@@ -108,6 +109,7 @@ public class HuaXuID implements IID2Service {
 
     @Override
     public void releaseDev() throws IOException {
+        thread.interrupt();
         IDDev.CloseSerial(fd);
         deviceControl.PowerOffDevice();
     }
@@ -256,7 +258,8 @@ public class HuaXuID implements IID2Service {
     public void getIDInfor(final boolean isNeedFingerprinter) {
         synchronized (this) {
             parseIDInfor.isGet = false;
-            Thread thread = new Thread(new Runnable() {
+            //寻卡成功之后才执行选卡和读卡
+            thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     int result = searchCard();
