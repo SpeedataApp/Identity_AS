@@ -1,9 +1,9 @@
 package com.speedata.libid2;
 
 import android.content.Context;
-import android.os.SystemClock;
 import android.serialport.DeviceControl;
 import android.serialport.SerialPort;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.speedata.libid2.utils.DataConversionUtils;
@@ -122,8 +122,6 @@ public class HuaXuID implements IID2Service {
     public int searchCard() {
         IDDev.WriteSerialByte(fd, DataConversionUtils.HexString2Bytes(FindCard));
         try {
-            SystemClock.sleep(sleep);
-
             byte[] bytes = IDDev.ReadSerial(fd, read_normal);
             logger.e("fd= " + fd);
             if (bytes == null) {
@@ -146,14 +144,11 @@ public class HuaXuID implements IID2Service {
         }
     }
 
-    int sleep = 300;
 
     @Override
     public int selectCard() {
         IDDev.WriteSerialByte(fd, DataConversionUtils.HexString2Bytes(ChooseCard));
         try {
-
-            SystemClock.sleep(sleep);
             byte[] bytes = IDDev.ReadSerial(fd, read_normal);
             if (bytes == null) {
                 logger.e("selectCard read null return");
@@ -215,16 +210,12 @@ public class HuaXuID implements IID2Service {
     }
 
     private byte[] sendReadCmd(boolean isNeedFingerprinter) throws UnsupportedEncodingException {
+        IDDev.clearportbuf(fd);
         if (isNeedFingerprinter) {
-            IDDev.clearportbuf(fd);
-            IDDev.clearportbuf(fd);
             IDDev.WriteSerialByte(fd, DataConversionUtils.HexString2Bytes(ReadCardWithFinger));
         } else {
-            IDDev.clearportbuf(fd);
-            IDDev.clearportbuf(fd);
             IDDev.WriteSerialByte(fd, DataConversionUtils.HexString2Bytes(ReadCard));
         }
-        SystemClock.sleep(sleep);
 
         byte[] bytes;
         if (!isNeedFingerprinter) {
@@ -262,14 +253,15 @@ public class HuaXuID implements IID2Service {
             thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    int result = searchCard();
                     //寻卡成功之后才执行选卡和读卡
-                    if (result == STATUE_OK_SEARCH) {
-
+                    Log.d("Reginer", "time is1:: " + System.currentTimeMillis());
+                    if (searchCard() == STATUE_OK_SEARCH) {
+                        Log.d("Reginer", "time is2:: " + System.currentTimeMillis());
                         if (selectCard() == STATUE_OK) {
-                            SystemClock.sleep(200);
+                            Log.d("Reginer", "time is3:: " + System.currentTimeMillis());
                             IDDev.clearportbuf(fd);
                             idInfor = readCard(isNeedFingerprinter);
+                            Log.d("Reginer", "time is4:: " + System.currentTimeMillis());
                             if (idInfor != null) {
                                 if (!idInfor.isSuccess()) {
                                     String errorMsg = parseReturnState(parseIDInfor.currentStatue);
@@ -277,6 +269,7 @@ public class HuaXuID implements IID2Service {
                                     logger.e("---ErrorMsg--" + errorMsg);
                                     callBack.callBack(idInfor);
                                 } else {
+                                    Log.d("Reginer", "time is:: " + System.currentTimeMillis());
                                     idInfor.setSuccess(true);
                                     callBack.callBack(idInfor);
                                 }

@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -28,7 +29,6 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity {
     private TextView tvIDInfor;
     private ImageView imgPic;
-    private TextView tvInfor;
 
 
     //    private ImageView imgFinger;
@@ -53,19 +53,20 @@ public class MainActivity extends AppCompatActivity {
         btnGet.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (timer == null) {
-                    timer = new Timer();
-                }
-                if (b) {
-                    timer.schedule(new ReadIDTask(), 20, 3000);
-                } else {
-                    timer.cancel();
-                    timer = null;
-                }
+                Log.d("Reginer", "time is:: " + System.currentTimeMillis());
+                iid2Service.getIDInfor(false);
+//                if (timer == null) {
+//                    timer = new Timer();
+//                }
+//                if (b) {
+//                    timer.schedule(new ReadIDTask(), 20, 3000);
+//                } else {
+//                    timer.cancel();
+//                    timer = null;
+//                }
             }
         });
 
-        tvInfor = (TextView) findViewById(R.id.tv_msg);
 
         checkBoxFinger = (CheckBox) findViewById(R.id.checkbox_wit_finger);
     }
