@@ -235,39 +235,43 @@ public class HuaXuID implements IID2Service {
     }
 
 
-
     private void readCard() {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 //寻卡成功之后才执行选卡和读卡
                 IDInfor idInfor;
-                if (searchCard() == STATUE_OK_SEARCH) {
-                    if (selectCard() == STATUE_OK) {
-                        mIDDev.clearportbuf(fd);
-                        idInfor = readCard(isNeedFingerprinter);
-                        if (idInfor != null) {
-                            if (!idInfor.isSuccess()) {
-                                String errorMsg = parseReturnState(parseIDInfor.currentStatue);
-                                idInfor.setErrorMsg(errorMsg);
-                                callBack.callBack(idInfor);
-                            } else {
-                                idInfor.setSuccess(true);
-                                callBack.callBack(idInfor);
-                            }
-                        }
-                    } else {
-                        idInfor = new IDInfor();
-                        idInfor.setSuccess(false);
-                        idInfor.setErrorMsg(mContext.getString(R.string.states4));
-                        callBack.callBack(idInfor);
-                    }
-                } else {
+
+                if (searchCard() != STATUE_OK_SEARCH) {
                     idInfor = new IDInfor();
                     idInfor.setSuccess(false);
                     idInfor.setErrorMsg(mContext.getString(R.string.states7));
                     callBack.callBack(idInfor);
+                    return;
                 }
+
+                if (selectCard() != STATUE_OK) {
+                    idInfor = new IDInfor();
+                    idInfor.setSuccess(false);
+                    idInfor.setErrorMsg(mContext.getString(R.string.states4));
+                    callBack.callBack(idInfor);
+                    return;
+                }
+
+                mIDDev.clearportbuf(fd);
+                idInfor = readCard(isNeedFingerprinter);
+                if (idInfor != null) {
+                    if (!idInfor.isSuccess()) {
+                        String errorMsg = parseReturnState(parseIDInfor.currentStatue);
+                        idInfor.setErrorMsg(errorMsg);
+                        callBack.callBack(idInfor);
+                    } else {
+                        idInfor.setSuccess(true);
+                        callBack.callBack(idInfor);
+                    }
+                }
+
+
             }
         });
         thread.start();
