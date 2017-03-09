@@ -85,15 +85,15 @@ class DeviceType {
     static int[] getGpio() {
         switch (android.os.Build.MODEL) {
             case "kt45":
-                return new int[] { 106 };
+                return new int[]{106};
             case "kt45q":
-                return new int[] { 94 };
+                return new int[]{94};
             case "KT50":
-                return new int[] { 64 };
+                return new int[]{64};
             case "KT55":
-                return new int[] { 88, 6 };
+                return new int[]{88, 6};
             case "KT50_B2":
-                return new int[] { 64 };
+                return new int[]{64};
 
             default:
                 break;

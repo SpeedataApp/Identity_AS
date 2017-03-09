@@ -9,7 +9,6 @@ import android.os.Looper;
 
 import com.cvr.device.CVRApi;
 import com.speedata.libid2.utils.DataConversionUtils;
-import com.speedata.libid2.utils.MyLogger;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -36,7 +35,6 @@ public class ParseIDInfor {
         this.mContext = mContext;
     }
 
-    private static MyLogger logger = MyLogger.jLog();
     public static final int STATUE_ERROR_HEAD = 1;
     public static final int STATUE_ERROR_CHECK = 2;
     public static final int STATUE_ERROR_LEN = 3;
@@ -115,8 +113,6 @@ public class ParseIDInfor {
                 System.arraycopy(revbuf, start_parse + 255 + 1024, finger, 0, 1024);
                 idInfor.setWithFinger(true);
                 idInfor.setFingerprStringer(finger);
-            } else {
-                logger.e("no finger");
             }
         } else {
             start_parse = 14;
@@ -225,11 +221,9 @@ public class ParseIDInfor {
         //判断SD卡中是否有解码库文件 不存在需要cp过去
         if (!IDFileUtils.isExit()) {
             System.out.println();
-            logger.e("file is not exit,cp file");
             IDFileUtils.copyfile("/sdcard/wltlib", "base.dat", R.raw.base, mContext);
             IDFileUtils.copyfile("/sdcard/wltlib", "license.lic", R.raw.license, mContext);
         }
-        logger.e("file is ok");
         //非主线程  需要执行prepare
 //        if (Looper.myLooper() == Looper.getMainLooper()) {
 //            Looper.prepare();
@@ -290,14 +284,12 @@ public class ParseIDInfor {
             res = STATUE_ERROR_HEAD;
             return res;
         }
-        logger.d("checkPackage len=" + buf.length);
         System.arraycopy(buf, 5, xorbuf, 0, real_len);
         if (isCheck) {
             byte xorflag = xor(xorbuf, xorbuf.length);
             byte check = buf[len - 1];
             if (xorflag != check) {
                 res = STATUE_ERROR_CHECK;
-                logger.d("xorflag failed  =" + check + "  " + xorflag);
                 return res;
             }
         }
@@ -335,11 +327,9 @@ public class ParseIDInfor {
         if (len >= 1295) {
 //            res = STATUE_READ_OK;
             res = SELECT_CARD_OK;
-            logger.d("---read ok,goto parse");
 //            isGet = true;
 //            parseIDInfor(buf);
         }
-        logger.d("---staues=" + res);
         currentStatue = res;
         return res;
     }
@@ -362,7 +352,6 @@ public class ParseIDInfor {
         for (i = 1; i < len; i++) {
             a = (byte) (a ^ buf[i]);
         }
-        logger.d("xor =" + String.format("%02x", a) + "\n");
         return a;
     }
 }

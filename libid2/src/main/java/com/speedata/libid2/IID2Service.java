@@ -38,7 +38,9 @@ public interface IID2Service {
      */
     public IDInfor readCard(boolean isNeedFingerprinter);
 
-    public void getIDInfor(boolean isNeedFingerprinter);
+    public void getIDInfor(boolean isNeedFingerprinter, boolean isLoop);
+
+//    public void getIDInfor(boolean isNeedFingerprinter);
 
     //    public void startCirculationRead(int interval);
     public String parseReturnState(int state);

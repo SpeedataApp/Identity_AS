@@ -23,8 +23,6 @@ import com.speedata.libid2.IDReadCallBack;
 import com.speedata.libid2.IID2Service;
 
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
     private TextView tvIDInfor;
@@ -35,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox checkBoxFinger;
     private ToggleButton btnGet;
 
+    private long startTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         initID();
     }
 
-    private Timer timer = new Timer();
 
     private void initUI() {
         setContentView(R.layout.activity_main);
@@ -53,17 +52,7 @@ public class MainActivity extends AppCompatActivity {
         btnGet.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                Log.d("Reginer", "time is:: " + System.currentTimeMillis());
-                iid2Service.getIDInfor(false);
-//                if (timer == null) {
-//                    timer = new Timer();
-//                }
-//                if (b) {
-//                    timer.schedule(new ReadIDTask(), 20, 3000);
-//                } else {
-//                    timer.cancel();
-//                    timer = null;
-//                }
+                iid2Service.getIDInfor(false, b);
             }
         });
 
@@ -73,18 +62,12 @@ public class MainActivity extends AppCompatActivity {
 
     private IID2Service iid2Service;
 
-    private class ReadIDTask extends TimerTask {
-        @Override
-        public void run() {
-
-            iid2Service.getIDInfor(checkBoxFinger.isChecked());
-        }
-    }
 
     private void clearUI() {
         tvIDInfor.setText("");
         imgPic.setImageBitmap(null);
     }
+
 
     private void initID() {
         iid2Service = IDManager.getInstance();
@@ -97,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
                     handler.sendMessage(message);
                 }
             });
+
 //            tvInfor.setText(String.format("s:%s b:115200 p:%s",
 //                    DeviceType.getSerialPort().substring(DeviceType.getSerialPort().length() - 6,
 //                            DeviceType.getSerialPort().length()),
@@ -125,6 +109,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+            Log.d("Reginer", "time is: " + (System.currentTimeMillis() - startTime));
+            startTime = System.currentTimeMillis();
+            iid2Service.getIDInfor(false, btnGet.isChecked());
             clearUI();
             IDInfor idInfor1 = (IDInfor) msg.obj;
 

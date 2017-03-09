@@ -1,1 +1,1 @@
-include ':app', ':libid2'
+include ':app', ':libid2', ':device'
