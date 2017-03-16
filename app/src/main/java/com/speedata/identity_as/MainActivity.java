@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     //    private ImageView imgFinger;
     private CheckBox checkBoxFinger;
     private ToggleButton btnGet;
+    private TextView tvMsg;
 
     private long startTime;
 
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initUI() {
         setContentView(R.layout.activity_main);
+        tvMsg = (TextView) findViewById(R.id.tv_msg);
         tvIDInfor = (TextView) findViewById(R.id.tv_idinfor);
         imgPic = (ImageView) findViewById(R.id.img_pic);
         btnGet = (ToggleButton) findViewById(R.id.btn_get);
@@ -112,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Reginer", "time is: " + (System.currentTimeMillis() - startTime));
             startTime = System.currentTimeMillis();
             iid2Service.getIDInfor(false, btnGet.isChecked());
-            clearUI();
+//            clearUI();
             IDInfor idInfor1 = (IDInfor) msg.obj;
 
             if (idInfor1.isSuccess()) {
@@ -124,10 +126,9 @@ public class MainActivity extends AppCompatActivity {
                         .getDeadLine());
                 Bitmap bmps = idInfor1.getBmps();
                 imgPic.setImageBitmap(bmps);
-
+                tvMsg.setText("");
             } else {
-                tvIDInfor.setText(String.format("ERROR:%s", idInfor1.getErrorMsg()));
-                imgPic.setImageBitmap(null);
+                tvMsg.setText(String.format("ERROR:%s", idInfor1.getErrorMsg()));
             }
         }
     };

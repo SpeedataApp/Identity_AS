@@ -5,7 +5,7 @@
 ```
  dependencies {
     compile 'com.speedata:deivice:1.2'
-    compile 'com.speedata:libid2:2.1'
+    compile 'com.speedata:libid2:2.4'
   }
 ```
 **Eclipse** 需导入libs库 LibDevice 和 LibIdentity
