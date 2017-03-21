@@ -21,8 +21,11 @@ import com.speedata.libid2.IDInfor;
 import com.speedata.libid2.IDManager;
 import com.speedata.libid2.IDReadCallBack;
 import com.speedata.libid2.IID2Service;
+import com.speedata.libutils.ConfigUtils;
+import com.speedata.libutils.ReadBean;
 
 import java.io.IOException;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private TextView tvIDInfor;
@@ -39,14 +42,34 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        PlaySoundUtils.initSoundPool(this);
         initUI();
         initID();
+        boolean isExit = ConfigUtils.isConfigFileExists();
+        if (isExit)
+            tvConfig.setText("定制配置：\n");
+        else
+            tvConfig.setText("标准配置：\n");
+        ReadBean.Id2Bean pasm = ConfigUtils.readConfig(this).getId2();
+        String gpio = "";
+        List<Integer> gpio1 = pasm.getGpio();
+        for (Integer s : gpio1) {
+            gpio += s + ",";
+        }
+        tvConfig.append("串口:" + pasm.getSerialPort() + "  波特率：" + pasm.getBraut() + " 上电类型:" +
+                pasm.getPowerType() + " GPIO:" + gpio);
     }
 
 
+    private TextView tvConfig;
+    private ImageView imageView;
+    private TextView tvTime;
+
     private void initUI() {
         setContentView(R.layout.activity_main);
+        tvTime = (TextView) findViewById(R.id.tv_time);
+        imageView = (ImageView) findViewById(R.id.img_logo);
+        tvConfig = (TextView) findViewById(R.id.tv_config);
         tvMsg = (TextView) findViewById(R.id.tv_msg);
         tvIDInfor = (TextView) findViewById(R.id.tv_idinfor);
         imgPic = (ImageView) findViewById(R.id.img_pic);
@@ -55,6 +78,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 iid2Service.getIDInfor(false, b);
+                if(b){
+                    MyAnimation.showLogoAnimation(MainActivity.this,imageView);
+                }else{
+                    imageView.clearAnimation();
+                }
             }
         });
 
@@ -111,13 +139,18 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Log.d("Reginer", "time is: " + (System.currentTimeMillis() - startTime));
+            long left_time = System.currentTimeMillis() - startTime;
+            Log.d("Reginer", "time is: " + left_time);
             startTime = System.currentTimeMillis();
             iid2Service.getIDInfor(false, btnGet.isChecked());
 //            clearUI();
             IDInfor idInfor1 = (IDInfor) msg.obj;
 
+//            showToast("ok");
             if (idInfor1.isSuccess()) {
+                Log.d("Reginer", "read success time is: " + left_time);
+                PlaySoundUtils.play(1,1);
+                tvTime.setText("耗时："+left_time+"ms");
                 tvIDInfor.setText("姓名:" + idInfor1.getName() + "\n身份证号：" + idInfor1.getNum()
                         + "\n性别：" + idInfor1.getSex()
                         + "\n民族：" + idInfor1.getNation() + "\n住址:"

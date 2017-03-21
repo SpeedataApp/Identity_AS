@@ -25,6 +25,12 @@
         android:layout_height="wrap_content"
         android:text="11"/>
 
+    <TextView
+        android:id="@+id/tv_config"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="200dp"
@@ -96,6 +102,12 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
+
     <ToggleButton
         android:id="@+id/btn_get"
         android:layout_width="fill_parent"
@@ -103,6 +115,13 @@
         android:text="读取身份证"
         android:textOff="读卡"
         android:textOn="停止"/>
+
+    <ImageView
+        android:id="@+id/img_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/icon_logo"/>
 
 
 </LinearLayout>
