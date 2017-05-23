@@ -4,8 +4,8 @@
 
 ```
  dependencies {
-       compile 'com.speedata:libid2:2.4.2'
-       compile 'com.speedata:deivice:1.4.4'
+       compile 'com.speedata:libid2:2.5.3'
+           compile 'com.speedata:deivice:1.4.4'
   }
 ```
 **Eclipse** 需导入libs库 LibDevice 和 LibIdentity
