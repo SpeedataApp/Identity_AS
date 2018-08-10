@@ -4,7 +4,7 @@
 
 ```
  dependencies {
-       compile 'com.speedata:libid2:2.5.3'
+       compile 'com.speedata:libid2:2.5.6'
            compile 'com.speedata:deivice:1.4.4'
   }
 ```
