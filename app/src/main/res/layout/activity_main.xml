@@ -23,7 +23,7 @@
         android:id="@+id/tv_msg"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="11"/>
+        android:text=""/>
 
     <TextView
         android:id="@+id/tv_config"

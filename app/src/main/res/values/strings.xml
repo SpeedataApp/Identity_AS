@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Identity_AS</string>
+    <string name="app_name">二代证Demo</string>
     <string name="need_finger">指纹</string>
     <string name="states_select_ok">指纹</string>
     //1.数据头错误 2.校验错误 3.长度错误 4.选取证/卡失败 5.操作成功 6.寻找证/卡成功 7.寻找证/卡失败
