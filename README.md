@@ -4,14 +4,13 @@
 
 ```
  dependencies {
-       compile 'com.speedata:libid2:2.5.6'
-           compile 'com.speedata:deivice:1.4.4'
+       implementation 'com.speedata:libid2:2.5.8'
+        implementation 'com.github.SpeedataG:Device:1.6.4'
   }
 ```
 **Eclipse** 需导入libs库 LibDevice 和 LibIdentity
 依赖以上两个lib库  运行时编译即可
 
-- IUHFService
 1. initDev 初始化设备
 1. releaseDev() 释放设备
 1. getIDInfor 获取身份证信息
