@@ -1,5 +1,6 @@
 package com.speedata.identity_as;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,6 +8,8 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.serialport.DeviceControlSpd;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -23,6 +26,10 @@ import com.speedata.libid2.IID2Service;
 import com.speedata.libutils.ConfigUtils;
 import com.speedata.libutils.ReadBean;
 import com.speedata.utils.ProgressDialogUtils;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.PermissionListener;
+import com.yanzhenjie.permission.Rationale;
+import com.yanzhenjie.permission.RationaleListener;
 
 import java.io.IOException;
 import java.util.List;
@@ -74,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PlaySoundUtils.initSoundPool(this);
+        permission();
         initUI();
         initID();
         boolean isExit = ConfigUtils.isConfigFileExists();
@@ -112,9 +120,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        ProgressDialogUtils.showProgressDialog(this, "正在初始化");
-
-
     }
 
     private void clearUI() {
@@ -122,21 +127,58 @@ public class MainActivity extends AppCompatActivity {
         imgPic.setImageBitmap(null);
     }
 
+    private void permission() {
+        AndPermission.with(this).permission(Manifest.permission.READ_EXTERNAL_STORAGE).callback(listener).rationale(new RationaleListener() {
+            @Override
+            public void showRequestPermissionRationale(int requestCode, Rationale rationale) {
+                AndPermission.rationaleDialog(MainActivity.this, rationale).show();
+            }
+        }).start();
+    }
+
+    PermissionListener listener = new PermissionListener() {
+        @Override
+        public void onSucceed(int requestCode, @NonNull List<String> grantPermissions) {
+
+        }
+
+        @Override
+        public void onFailed(int requestCode, @NonNull List<String> deniedPermissions) {
+            // 用户否勾选了不再提示并且拒绝了权限，那么提示用户到设置中授权。
+            if (AndPermission.hasAlwaysDeniedPermission(MainActivity.this, deniedPermissions)) {
+                AndPermission.defaultSettingDialog(MainActivity.this, 300).show();
+            }
+        }
+    };
+
     private void initID() {
+        ProgressDialogUtils.showProgressDialog(this, "正在初始化");
         new Thread(new Runnable() {
             @Override
             public void run() {
                 iid2Service = IDManager.getInstance();
                 try {
-                    final boolean result = iid2Service.initDev(MainActivity.this
-                            , new IDReadCallBack() {
-                                @Override
-                                public void callBack(IDInfor infor) {
-                                    Message message = new Message();
-                                    message.obj = infor;
-                                    handler.sendMessage(message);
-                                }
-                            });
+
+                    DeviceControlSpd deviceControlSpd = new DeviceControlSpd();
+                    deviceControlSpd.gtPower("printer_open");
+                    final boolean result = iid2Service.initDev(MainActivity.this, new IDReadCallBack() {
+                        @Override
+                        public void callBack(IDInfor infor) {
+                            Message message = new Message();
+                            message.obj = infor;
+                            handler.sendMessage(message);
+                        }
+                    }, "/dev/ttyHSL1", 115200, null, null);
+
+//                    final boolean result = iid2Service.initDev(MainActivity.this
+//                            , new IDReadCallBack() {
+//                                @Override
+//                                public void callBack(IDInfor infor) {
+//                                    Message message = new Message();
+//                                    message.obj = infor;
+//                                    handler.sendMessage(message);
+//                                }
+//                            });
 
                     showResult(result, "");
 
@@ -185,13 +227,11 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         } catch (Exception e) {
             //            downLoadDeviceApp();
-            new AlertDialog.Builder(MainActivity.this).setCancelable(false).setMessage("请去应用市场下载思必拓调试工具进行配置" )
+            new AlertDialog.Builder(MainActivity.this).setCancelable(false).setMessage("请去应用市场下载思必拓调试工具进行配置")
                     .setPositiveButton("确定", null).show();
         }
 
     }
-
-
 
 
     private void showToast(String msg) {
