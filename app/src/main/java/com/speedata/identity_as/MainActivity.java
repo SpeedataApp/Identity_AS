@@ -13,6 +13,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,7 +36,7 @@ import com.yanzhenjie.permission.RationaleListener;
 import java.io.IOException;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private TextView tvIDInfor;
     private ImageView imgPic;
 
@@ -46,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imageView;
     private TextView tvTime;
     private IID2Service iid2Service;
+
+
     @SuppressLint("HandlerLeak")
     Handler handler = new Handler() {
         @Override
@@ -76,6 +80,10 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+    /**
+     * 清除信息
+     */
+    private Button mBtnClear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         PlaySoundUtils.initSoundPool(this);
         permission();
         initUI();
-        initID();
+        initView();
         boolean isExit = ConfigUtils.isConfigFileExists();
         if (isExit) {
             tvConfig.setText("定制配置：\n");
@@ -98,6 +106,30 @@ public class MainActivity extends AppCompatActivity {
         }
         tvConfig.append("串口:" + pasm.getSerialPort() + "  波特率：" + pasm.getBraut() + " 上电类型:" +
                 pasm.getPowerType() + " GPIO:" + gpio);
+//        tvConfig.append("串口:" + "ttyMT0" + "  波特率：" + "115200" + " 上电类型:" +
+//                "NEW_MAIN" + " GPIO:" + "12");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initID();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        try {
+//            DeviceControlSpd deviceControlSpd = new DeviceControlSpd();
+//            deviceControlSpd.gtPower("printer_close");
+//            deviceControlSpd.gtPower("charge_off");
+            //退出 释放二代证模块
+            if (iid2Service != null) {
+                iid2Service.releaseDev();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initUI() {
@@ -158,28 +190,27 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 iid2Service = IDManager.getInstance();
                 try {
+//                    DeviceControlSpd deviceControlSpd = new DeviceControlSpd();
+//                    deviceControlSpd.gtPower("printer_open");
+////
+//                    final boolean result = iid2Service.initDev(MainActivity.this, new IDReadCallBack() {
+//                        @OverridedeviceControlSpd.gtPower("charge_on");
+//                        public void callBack(IDInfor infor) {
+//                            Message message = new Message();
+//                            message.obj = infor;
+//                            handler.sendMessage(message);
+//                        }
+//                    }, "/dev/ttyHSL2", 115200, null, null);
 
-                    DeviceControlSpd deviceControlSpd = new DeviceControlSpd();
-                    deviceControlSpd.gtPower("printer_open");
-                    final boolean result = iid2Service.initDev(MainActivity.this, new IDReadCallBack() {
-                        @Override
-                        public void callBack(IDInfor infor) {
-                            Message message = new Message();
-                            message.obj = infor;
-                            handler.sendMessage(message);
-                        }
-                    }, "/dev/ttyHSL1", 115200, null, null);
-
-//                    final boolean result = iid2Service.initDev(MainActivity.this
-//                            , new IDReadCallBack() {
-//                                @Override
-//                                public void callBack(IDInfor infor) {
-//                                    Message message = new Message();
-//                                    message.obj = infor;
-//                                    handler.sendMessage(message);
-//                                }
-//                            });
-
+                    final boolean result = iid2Service.initDev(MainActivity.this
+                            , new IDReadCallBack() {
+                                @Override
+                                public void callBack(IDInfor infor) {
+                                    Message message = new Message();
+                                    message.obj = infor;
+                                    handler.sendMessage(message);
+                                }
+                            });
                     showResult(result, "");
 
                 } catch (IOException e) {
@@ -240,14 +271,25 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        try {
-            //退出 释放二代证模块
-            if (iid2Service != null) {
-                iid2Service.releaseDev();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
         super.onDestroy();
+    }
+
+    private void initView() {
+        mBtnClear = (Button) findViewById(R.id.btn_clear);
+        mBtnClear.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            default:
+                break;
+            case R.id.btn_clear:
+                tvTime.setText("耗时：" + 0 + "ms");
+                tvIDInfor.setText("");
+                imgPic.setImageBitmap(null);
+                break;
+        }
     }
 }
