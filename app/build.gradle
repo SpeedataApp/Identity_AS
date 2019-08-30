@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 28
-//    buildToolsVersion "28.0.1"
     defaultConfig {
         applicationId "com.speedata.identity_as"
         minSdkVersion 19
@@ -10,9 +9,12 @@ android {
         versionCode 2
         versionName "1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        ndk {
-            abiFilters 'armeabi'// 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64', 'mips', 'mips64'
-        }
+//        API 23以下  不能指定 armeabi 或者armeabi-v7a 会报错
+//        /lib/arm/libwlt2bmp.so" has text relocations
+//        No implementation found for int cn.ywho.api.decode.DecodeWlt.wlt2bmp(byte[], byte[], int) (tried Java_cn_ywho_api_decode_DecodeWlt_wlt2bmp and Java_cn_ywho_api_decode_DecodeWlt_wlt2bmp___3B_3BI)
+//        ndk {
+//            abiFilters 'armeabi'// 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64', 'mips', 'mips64'
+//        }
     }
     buildTypes {
         release {
@@ -31,7 +33,5 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation 'com.speedata:libid2:+'
     implementation 'com.github.SpeedataG:Device:1.6.3'
-    //    compile project(":libid2")
-    //    compile project(":device")
     implementation 'com.alibaba:fastjson:1.2.54'
 }
