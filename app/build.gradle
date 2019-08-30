@@ -6,8 +6,8 @@ android {
         applicationId "com.speedata.identity_as"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 2
-        versionName "1.1"
+        versionCode 3
+        versionName "1.1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 //        API 23以下  不能指定 armeabi 或者armeabi-v7a 会报错
 //        /lib/arm/libwlt2bmp.so" has text relocations
