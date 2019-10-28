@@ -16,7 +16,7 @@ module的build.gradle中的dependencies中添加
 ```
  dependencies {
         implementation 'com.github.SpeedataG:IdentityCard:2.6.1'
-        implementation 'com.github.SpeedataG:Device:1.6.4'
+        implementation 'com.github.SpeedataG:Device:1.6.8'
   }
 ```
 **Eclipse** 需导入libs库 LibDevice 和 LibIdentity
