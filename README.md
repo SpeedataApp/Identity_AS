@@ -1,10 +1,21 @@
 # Identity
 -  导入依赖库
-**AndroidStudio** build.gradle中的dependencies中添加
+1.在项目的build.gradle中添加以下
+
+```
+allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+ 
+```
+module的build.gradle中的dependencies中添加
 
 ```
  dependencies {
-       implementation 'com.speedata:libid2:2.5.8'
+        implementation 'com.github.SpeedataG:IdentityCard:2.6.1'
         implementation 'com.github.SpeedataG:Device:1.6.4'
   }
 ```
