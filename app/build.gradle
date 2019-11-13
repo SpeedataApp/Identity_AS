@@ -31,7 +31,11 @@ dependencies {
     })
     implementation 'com.android.support:appcompat-v7:28.0.0'
     testImplementation 'junit:junit:4.12'
-    implementation 'com.speedata:libid2:+'
+    implementation 'com.github.SpeedataG:IdentityCard:2.6.1'
     implementation 'com.github.SpeedataG:Device:1.6.3'
     implementation 'com.alibaba:fastjson:1.2.54'
+
+
+    //6.0权限添加三方库
+    implementation 'com.yanzhenjie:permission:1.1.2'
 }
