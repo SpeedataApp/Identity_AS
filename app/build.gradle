@@ -5,11 +5,13 @@ android {
     defaultConfig {
         applicationId "com.speedata.identity_as"
         minSdkVersion 19
-        targetSdkVersion 28
-        versionCode 3
-        versionName "1.1.1"
+
+//        建议使用22
+        targetSdkVersion 22
+        versionCode 5
+        versionName "1.1.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-//        API 23以下  不能指定 armeabi 或者armeabi-v7a 会报错
+//        API 23以上  不能指定abiFilters  会报错
 //        /lib/arm/libwlt2bmp.so" has text relocations
 //        No implementation found for int cn.ywho.api.decode.DecodeWlt.wlt2bmp(byte[], byte[], int) (tried Java_cn_ywho_api_decode_DecodeWlt_wlt2bmp and Java_cn_ywho_api_decode_DecodeWlt_wlt2bmp___3B_3BI)
 //        ndk {
@@ -32,7 +34,7 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:28.0.0'
     testImplementation 'junit:junit:4.12'
     implementation 'com.github.SpeedataG:IdentityCard:2.6.1'
-    implementation 'com.github.SpeedataG:Device:1.6.3'
+    implementation 'com.github.SpeedataG:Device:1.6.8'
     implementation 'com.alibaba:fastjson:1.2.54'
 
 

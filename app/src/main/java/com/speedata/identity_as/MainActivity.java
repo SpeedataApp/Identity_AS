@@ -8,7 +8,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.serialport.DeviceControlSpd;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -123,13 +123,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 pasm.getPowerType() + " GPIO:" + gpio);
         //        tvConfig.append("串口:" + "ttyMT1" + "  波特率：" + "115200" + " 上电类型:" +
         //                "NEW_MAIN" + " GPIO:" + "28 75");
-        initID();
+        //        initID();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //        initID();
+        initID();
+    }
+
+    @Override
+    protected void onPause() {
+        try {
+            // 取消循环读卡
+            btnGet.setChecked(false);
+            //退出 释放二代证模块
+            SystemClock.sleep(100);
+            if (iid2Service != null) {
+                iid2Service.releaseDev();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        super.onPause();
+
     }
 
     @Override
@@ -258,14 +275,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onDestroy() {
-        try {
-            //退出 释放二代证模块
-            if (iid2Service != null) {
-                iid2Service.releaseDev();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
         super.onDestroy();
     }
 
